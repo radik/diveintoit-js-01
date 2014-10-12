@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+
+        <title>Dive Into IT - JavaScript, JQuery, DOM</title>
+
+        <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+        <meta name="author" content="Hakim El Hattab">
+
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <link rel="stylesheet" href="../libs/reveal.js-2.6.2/css/reveal.min.css">
+        <link rel="stylesheet" href="../libs/reveal.js-2.6.2/css/theme/sky.css" id="theme">
+
+        <!-- For syntax highlighting -->
+        <link rel="stylesheet" href="../libs/reveal.js-2.6.2/lib/css/zenburn.css">
+
+        <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+        <script>
+            if( window.location.search.match( /print-pdf/gi ) ) {
+                var link = document.createElement( 'link' );
+                link.rel = 'stylesheet';
+                link.type = 'text/css';
+                link.href = '../libs/reveal.js-2.6.2/css/print/pdf.css';
+                document.getElementsByTagName( 'head' )[0].appendChild( link );
+            }
+        </script>
+
+        <!--[if lt IE 9]>
+        <script src="../libs/reveal.js-2.6.2/lib/js/html5shiv.js"></script>
+        <![endif]-->
+        <style type="text/css">
+        .reveal section img {
+            border:0px;
+            box-shadow:0 0 0px;
+        }
+        .reveal pre {
+            box-shadow:0 0 0px;
+        }
+        </style>
+    </head>
+
+    <body>
+
+        <div class="reveal">
+            <div class="slides">
+                <section>
+                    <h1>DOM, JQuery</h1>
+                    <h3>Dive into IT - JavaScript</h3>
+                    <p>
+                        <small><a href="http://blog.radik.me/">Radik Fattakhov</a> / <a href="http://twitter.com/radikft">@radikft</a></small>
+                    </p>
+                </section>
+
+                <section>
+                    <h2>О себе</h2>
+                    <ul>
+                        <li>В разработке с 2007 года</li>
+                        <li>Ведущий разработчик БАРС Груп</li>
+                        <li>Преподаватель в ВШ ИТиС, КФУ</li>
+                        <li>Писал AJAX-запросы без JQuery</li>
+                    </ul>
+                </section>
+
+                <section style="font-size: 50px;">
+                    <p>Мы знаем DOM, JQuery!</p>
+                    <p>Давай что-нибудь поинтереснее!</p>
+                </section>
+
+                <section>
+                    <h2>План</h2>
+                    <ul>
+                        <li>DOM</li>
+                        <li>Events и Event Loop</li>
+                        <li>JQuery best practices</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>HTML Document</h3>
+<pre style="font-size:35px;"><code>
+    &lt;html&gt;
+        &lt;head&gt;
+            &lt;title&gt;Пример&lt;/title&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+            Привет, Мир!
+        &lt;/body&gt;
+    &lt;/html&gt;
+
+</code></pre>
+                </section>
+
+                <section>
+                    <h2>DOM</h2>
+                    <img src="img/dom.png">
+                </section>
+<!-- Events -->
+                <section>
+                    <h3>Events bubbling &amp; events capturing</h3>
+                </section>
+
+                <section>
+                    <img src="img/events.png">
+<pre><code class="html">
+    &lt;div id="block_outer"&gt;
+        &lt;div id="block_inner"&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    
+</code></pre>
+                </section>
+                <section>
+                    <img src="img/events.png">
+<pre><code class="html">
+    &lt;div id="block_outer" onclick="onOuterClick"&gt;
+        &lt;div id="block_inner" onclick="onInnerClick"&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    
+</code></pre>
+                </section>
+
+                <section>
+                    <h3>Bubbling <small>vs</small> Capturing</h3>
+                    <img src="img/events-bubbling-capturing.png">
+                </section>
+
+                <section>
+                    <h3>W3C Model</h3>
+                    <img src="img/events-w3c.png">
+<pre><code class="javascript">
+    addEventListener(type, listener, useCapture)
+
+</code></pre>
+                </section>
+
+                <section>
+                    <h3>Как прекратить выполнение следующего события?</h3>
+<pre><code class="javascript">
+    function myEventHandler(e) {
+        if (!e) {
+            window.event.cancelBubble = true; // для IE
+        } else if (e.stopPropagation) {
+            e.stopPropagation();
+        }
+    }
+
+</code></pre>
+                </section>
+
+                <section>
+                    <h2>Event target</h2>
+<pre><code class="javascript">
+    $('#level1').addEvent('click', function(e) {
+        // MSIE "features"
+        var target = e.target ? e.target : e.srcElement;
+        if ( $(target).is('#level3') ) {
+            $('#test').append('#level3 clicked');
+        }
+    }, false);
+
+</code></pre>
+                </section>
+
+
+                <section>
+                    <h2>Event loop</h2>
+                </section>
+
+                <section>
+                    <h3>JavaScript - однопоточный</h3>
+                    <p>Для каждого окна существует всего один поток для выполнения JavaScript-кода.</p>
+                    <small>*<a href="http://www.w3.org/TR/workers/">Web Workers</a></small>
+                </section>
+
+                <section>
+                    <h3>Event Loop</h3>
+                    <img src="img/event-loop.png" alt="">
+                </section>
+<!-- End events -->
+
+
+<!-- JQuery best practices -->
+                <section>
+                    <h1>JQuery</h1>
+                </section>
+                <section>
+                    <h2>jQuery Ready Event</h2>
+                </section>
+                <section>
+                    <h4>Большинство проектов начинается так:</h4>
+                    <pre>
+    <code class="javascript">
+  $("document").ready(function() {
+    // DOM готов!
+    // Остальной код здесь.
+  });
+    </code>
+                    </pre>
+                    <p>или более короткая версия...</p>
+                    <pre>
+    <code class="javascript">
+  $(function() {
+    // DOM готов!
+    // Остальной код здесь.
+  });
+    </code>
+                </pre>
+                </section>
+                <section>
+                    <h3>Это нормально, если...</h3>
+                    <br />
+                    <ul>
+                        <li>Известно окружение, в котором будет бежать ваш код</li>
+                        <li>Вам плевать на производительность</li>
+                        <li>Вы не используете лучшие практики</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Вот так лучше:</h2>
+
+                    <pre>
+    <code class="javascript">
+  // IIFE - Immediately Invoked Function Expression
+  (function($, window, document) {
+
+    // $ теперь в локальном scope
+
+   // ждем jQuery ready event на document
+   $(function() {
+
+     // DOM готов!
+
+   });
+   // Остальной код здесь!
+
+  }(window.jQuery, window, document));
+  // Глобальный jQuery объект передается как параметр
+    </code>
+                    </pre>
+                </section>
+               
+                <section>
+                <h2>DOM manipulation</h2>
+                </section>
+                <section>
+                    <h3>В большинстве проектов:</h3>
+                    <pre>
+    <code class="javascript">
+  // Задаем атрибут title элемента, используя текущее значение
+  $(".container input#elem").attr("title", $(".container input#elem").text());
+
+  // Красим элемент в красный цвет
+  $(".container input#elem").css("color", "red");
+
+  // Заставляем элемент исчезнуть
+  $(".container input#elem").fadeOut();
+
+    </code>
+                    </pre>
+            </section>
+                <section>
+                    <h2>Это нормально, если...</h2>
+                    <br />
+                    <ul>
+                        <li>Вам нравится повторять за собой</li>
+                        <li>Вам плевать на производительность</li>
+                        <li>Вы не используете лучшие практики</li>
+                    </ul>
+                </section>
+                    <section>
+                    <h2>Вот так лучше:</h2>
+
+                    <pre>
+    <code class="javascript" class="javascript">
+  // Задаем атрибут title элемента, используя текущее значение
+  $("#elem").attr("title", $("#elem").text());
+
+  // Красим элемент в красный цвет
+  $("#elem").css("color", "red");
+
+  // Заставляем элемент исчезнуть
+  $("#elem").fadeOut();
+    </code>
+                    </pre>
+                    <h3>Упрощайте селекторы</h3>
+                    </section>
+                    <section>
+                    <h2>Лучший вариант:</h2>
+
+                    <pre>
+    <code class="javascript">
+  // Сохраняем DOM element в переменной
+  var elem = $("#elem");
+
+  // Задаем атрибут title элемента, используя текущее значение
+  elem.attr("title", elem.text());
+
+  // Красим элемент в красный цвет
+  elem.css("color", "red");
+
+  // Заставляем элемент исчезнуть
+  elem.fadeOut();
+    </code>
+                    </pre>
+                    <h3>Кэшируйте ваши селекторы в перемнных</h3>
+                  </section>
+                <section>   
+                    <p>или более короткая версия...</p>
+                    <pre>
+    <code class="javascript">
+  // Сохраняем DOM element в переменной
+  var elem = $("#elem");
+
+  // Chaining
+  elem.attr("title", elem.text()).css("color", "red").fadeOut();
+
+    </code>
+                </pre>
+                <h3>Chaining</h3>
+                    </section>
+<section>
+    <h2>Еще один пример с DOM</h2>
+</section>
+                <section>
+                    <h3>В большинстве проектов:</h3>
+                    <pre>
+    <code class="javascript">
+  // Динамическое построение списка на основе массива
+  var localArr = ["Greg", "Peter", "Kyle", "Danny", "Mark"],
+    list = $("ul.people");
+
+  $.each(localArr, function(index, value) {
+
+    list.append("&lt;li id=" + index + "&gt;" + value + "&lt;/li>");
+
+  });
+
+    </code>
+                    </pre>
+            </section>
+                <section>
+                    <h2>Это нормально, если...</h2>
+                    <br />
+                    <ul>
+                        <li>Вам нравится в цикле добавлять элементы в DOM</li>
+                        <li>Вам нравятся медленные web-приложения</li>
+                        <li>Вы не используете лучшие практики</li>
+                    </ul>
+                </section>
+                    <section>
+                    <h2>Лучший вариант:</h2>
+
+                    <pre>
+    <code class="javascript">
+  // Динамическое построение списка на основе массива
+  var localArr = ["Greg", "Peter", "Kyle", "Danny", "Mark"],
+    list = $("ul.people"),
+    dynamicItems = "";
+
+  $.each(localArr, function(index, value) {
+
+    dynamicItems += "&lt;li id=" + index + "&gt;" + value + "&lt;/li>";
+
+  });
+
+  list.append(dynamicItems);
+    </code>
+                    </pre>
+                    <h3>Добавляйте все за один раз</h3>
+                    </section>
+                    
+                    <section>
+    <h2>Event Handling</h2>
+                    </section>
+<section>
+                    <h3>В большинстве проектов:</h3>
+                    <pre>
+    <code class="javascript">
+
+  $("#longlist li").on("mouseenter", function() {
+
+    $(this).text("Жми меня!");
+
+  });
+
+  $("#longlist li").on("click", function() {
+
+    $(this).text("Зачем ты на меня кликнул?!");
+
+  });
+
+    </code>
+                    </pre>
+            </section>
+                <section>
+                    <h2>Это нормально, если...</h2>
+                    <br />
+                    <ul>
+                        <li>Вам нравится использовать много памяти</li>
+                        <li>У вас мало DOM элементов на странице</li>
+                        <li>Вы не используете лучшие практики</li>
+                    </ul>
+                </section>
+                    <section>
+                    <h2>Вот так лучше:</h2>
+
+                    <pre>
+    <code class="javascript">
+  var listItems = $("#longlist li");
+  listItems.on({
+
+    "mouseenter": function() {
+
+      $(this).text("Жми меня!");
+
+    },
+
+    "click": function() {
+
+      $(this).text("Зачем ты на меня кликнул?!");
+
+    }
+
+  });
+    </code>
+                    </pre>
+                    <h3>DRY - не повторяйте себя</h3>
+                    </section>
+                    <section>
+                    <h2>Лучший вариант:</h2>
+
+                    <pre>
+    <code class="javascript">
+  var list = $("#longlist");
+
+  list.on("mouseenter", "li", function(){
+
+    $(this).text("Жми меня!");
+
+  });
+
+  list.on("click", "li", function() {
+
+    $(this).text("Зачем ты на меня кликнул?!");
+
+  });
+    </code>
+                    </pre>
+                    <h3>Event Delegation</h3>
+                  </section>
+
+                    <section>
+    <h2>AJAX</h2>
+    <h5>(не футбольный клуб)</h5>
+                    </section>
+<section>
+                    <h3>В большинстве проектов:</h3>
+                    <pre>
+    <code class="javascript">
+  function getName(personid) {
+    var dynamicData = {};
+    dynamicData["id"] = personID;
+    $.ajax({
+      url: "getName.php",
+      type: "get",
+      data: dynamicData,
+      success: function(data) {
+        // Обновляем UI, используя результаты запроса
+        $(".person-name").text(data.name);  
+      }
+    });
+  }
+
+  getName("2342342");
+
+    </code>
+                    </pre>
+            </section>
+                <section>
+                    <h2>Это нормально, если...</h2>
+                    <br />
+                    <ul>
+                        <li>Вам нравится код, который нельзя переиспользовать</li>
+                        <li>Вам плевать на множественные ajax-запросы</li>
+                        <li>Вы не используете лучшие практики</li>
+                    </ul>
+                </section>
+                    <section>
+                    <h2>Лучший вариант:</h2>
+
+                    <pre>
+    <code class="javascript">
+  function getName(personid) {
+    var dynamicData = {};
+    dynamicData["id"] = personID;
+    return $.ajax({
+      url: "getName.php",
+      type: "get",
+      data: dynamicData
+    });
+  }
+
+  getName("2342342").done(function(data) {
+    // Обновляем UI, используя результаты запроса
+    $(".person-name").text(data.name); 
+  });
+    </code>
+                    </pre>
+                    <h3>Используйте Promises</h3>
+                    </section>
+<!-- End JQuery best practices -->
+
+
+                <section>
+                    <h2>Ссылки</h2>
+                    <ul>
+                        <li><a href="http://learn.javascript.ru/dom">http://learn.javascript.ru/dom</a></li>
+                        <li><a href="http://habrahabr.ru/post/126471/">http://habrahabr.ru/post/126471/</a></li>
+                        <li><a href="http://javascript.info/tutorial/events-and-timing-depth">http://javascript.info/tutorial/events-and-timing-depth</a></li>
+                        <li><a href="http://gregfranko.com/jquery-best-practices">http://gregfranko.com/jquery-best-practices</a></li>
+                        <li><a href="https://github.com/radik/diveintoit-js-01">https://github.com/radik/diveintoit-js-01</a></li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Домашнее задание</h2>
+                </section>
+
+                <section>
+                    <p style="font-size: 80px;">Спасибо за внимание!</p>
+                    <h4>Radik Fattakhov / <a href="http://blog.radik.me">blog.radik.me</a></h4>
+                </section>
+
+            </div>
+
+        </div>
+
+        <script src="../libs/reveal.js-2.6.2/lib/js/head.min.js"></script>
+        <script src="../libs/reveal.js-2.6.2/js/reveal.min.js"></script>
+
+        <script>
+
+            // Full list of configuration options available here:
+            // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                controls: true,
+                progress: true,
+                history: true,
+                center: true,
+
+                theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+                transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+                // Parallax scrolling
+                // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+                // parallaxBackgroundSize: '2100px 900px',
+
+                // Optional libraries used to extend on reveal.js
+                dependencies: [
+                    { src: '../libs/reveal.js-2.6.2/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: '../libs/reveal.js-2.6.2/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: '../libs/reveal.js-2.6.2/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: '../libs/reveal.js-2.6.2/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: '../libs/reveal.js-2.6.2/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+                    { src: '../libs/reveal.js-2.6.2/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+                ]
+            });
+
+        </script>
+
+    </body>
+</html>

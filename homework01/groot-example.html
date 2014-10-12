@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Groot Example</title>
+    <script type="text/javascript" src="groot.js"></script>
+</head>
+<body>
+    <div id="content"></div>
+    <script type="text/javascript">
+        var contentEl = groot.select('#content');
+        contentEl.append('h1');
+
+        var hEl = contentEl.find('h1');
+        hEl.html('Я есть Грут!');
+        hEl.css('color', 'green');
+    </script>
+</body>
+</html>
