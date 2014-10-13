@@ -99,6 +99,134 @@
                 <section>
                     <h2>DOM</h2>
                     <img src="img/dom.png">
+                    <p>DOM — это представление документа в виде дерева тегов, доступное для изменения через JavaScript</p>
+                </section>
+                <section>
+                    <h2>DOM</h2>
+                    <img src="img/dom-spaces.png" alt="">
+                    <p>Пробельные символы - тоже узлы DOM-дерева</p>
+                </section>
+
+                <section>
+                    <h3>Навигация в DOM</h3>
+                    <ul>
+                        <li>document.documentElement - html</li>
+                        <li>document.body - body</li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>Навигация в DOM</h3>
+<pre><code class="html">
+    &lt;!DOCTYPE HTML&gt;
+    &lt;html&gt;
+      &lt;head&gt;
+        &lt;script&gt;
+          alert(&quot;&#1048;&#1079; HEAD: &quot; + document.body); // null
+        &lt;/script&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;script&gt;
+          alert(&quot;&#1048;&#1079; BODY: &quot; + document.body);
+        &lt;/script&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+
+</code></pre>
+<p>Нельзя получить доступ к элементу, которого еще не существует в момент выполнения скрипта.</p>
+                </section>
+                <section>
+                    <p style="font-size:50px;">children &amp; childNodes</p>
+<ul>
+    <li><b>children</b> - только дочерние узлы, соответствующие тегам</li>
+    <li><b>childNodes</b> - все дочерние элементы, включая текстовые</li>
+</ul>
+                </section>
+                <section>
+                    <h3>Ссылки вверх и вниз</h3>
+                    <ul>
+                        <li>firstChild</li>
+                        <li>lastChild</li>
+                        <li>parentNode</li>
+                        <li>previousSibling, nextSibling</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <p style="font-size:50px;">getElement* и querySelector*</p>
+                    <ul>
+                        <li>getElementById</li>
+                        <li>getElementsByTagName</li>
+                        <li>getElementsByName</li>
+                        <li>getElementsByClassName</li>
+                        <li>querySelectorAll</li>
+                        <li>querySelector</li>
+                        <li>matchesSelector</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Внутреннее устройство поисковых методов</h3>
+                </section>
+
+                <section>
+                    <p style="font-size:50px;">document.getElementById(id)</p>
+                    <p>Браузер поддерживает у себя внутреннее соответствие id -&gt; элемент</p>
+                </section>
+
+                <section>
+                    <p style="font-size:50px;">elem.querySelector(query), elem.querySelectorAll(query)</p>
+                    <p>Просто перебор, никаких сложных структур</p>
+                </section>
+
+                <section>
+                    <p style="font-size:50px;">elem.getElementsBy*(...)</p>
+                    <p>Результаты поиска getElementsBy* — живые! При изменении документа — изменяется и результат запроса.</p>
+                </section>
+
+                <section>
+                    <p style="font-size:50px;">Два способа оптимизации</p>
+<pre><code class="javascript">
+    var elems = document.getElementsByTagName('div');
+    alert( elems[0] );
+    alert( elems[995] );
+    alert( elems[500] );
+    alert( elems.length );
+
+</code></pre>
+                </section>
+
+                <section>
+                    <p style="font-size:50px;">Два способа оптимизации</p>
+                    <ul>
+                        <li>Способ Firefox</li>
+                        <li>Способ WebKit</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Добавление и удаление узлов</h3>
+                    </section>
+                <section>
+                    <p>Методы для создания узлов:</p>
+                    <ul>
+<li>document.createElement(tag) — создает элемент</li>
+<li>document.createTextNode(value) — создает текстовый узел</li>
+<li>elem.cloneNode(deep) — клонирует элемент, если deep == true, то со всеми потомками.</li>
+</ul>
+</section>
+<section>
+<p>Вставка и удаление узлов:</p>
+<ul>
+    <li>
+parent.appendChild(elem)</li>
+    <li>
+parent.insertBefore(elem, nextSibling)</li>
+    <li>
+parent.removeChild(elem)</li>
+    <li>
+parent.replaceChild(elem, currentElem)</li>
+</ul>
+                    </ul>
                 </section>
 <!-- Events -->
                 <section>
